@@ -93,6 +93,10 @@ if __name__ == '__main__':
                                help="PCA components for dimensionality reduction")
     viz_dependent.add_argument("-p", "--perplexity", metavar="P", default=30, type=int,
                                help="t-SNE perplexity for dimensionality reduction")
+    viz_dependent.add_argument("-r", "--reduce-train-data", action="store_true",
+                               help="reduce the training data",
+                               note="the data is only reduced for the visualization by default")
+    viz_dependent.add_argument("-f", "--features", nargs="*",type=lambda x: x.split(","),help="comma separated list of features to be selected", default="")
     initialize(noargs_action="help")
     logger.name = "model"
     logging.configLogger(logger, ["INFO", "DEBUG"][args.verbose], fmt=LOG_FORMATS[args.verbose], relative=True)
@@ -116,7 +120,7 @@ if __name__ == '__main__':
             name = Model(**vars(args))
         if args.command == "visualize":
             args.viz_params = {}
-            for a in ["imputer_strategy", "pca_components", "perplexity"]:
+            for a in ["imputer_strategy", "pca_components", "perplexity", "reduce_train_data", "features"]:
                 args.viz_params[a] = getattr(args, a)
                 delattr(args, a)
         getattr(name, args.command)(**vars(args))
