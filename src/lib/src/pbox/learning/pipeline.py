@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.decomposition import PCA
+from sklearn.decomposition import FastICA, PCA
+from sklearn.manifold import TSNE
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import *
 from tinyscript import logging
@@ -12,6 +13,7 @@ __all__ = ["make_pipeline", "DebugPipeline", "DebugTransformer", "Pipeline", "PR
 
 
 PREPROCESSORS = {
+    'FastICA':    (FastICA, {'n_components': 2}),
     'MA':         MaxAbsScaler,
     'MM':         MinMaxScaler,
     'Norm':       Normalizer,
@@ -24,6 +26,7 @@ PREPROCESSORS = {
     'Rob':        (RobustScaler, {'quantile_range': (25, 75)}),
     'PCA':        (PCA, {'n_components': 2}),
     'Std':        StandardScaler,
+    't-SNE':      (TSNE, {'n_components': 2})
 }
 
 
@@ -43,7 +46,7 @@ def make_pipeline(pipeline, preprocessors, logger=null_logger):
         n = p.__name__
         v = "transform" if n.endswith("Transformer") else "encode" if n.endswith("Encoder") else \
             "standardize" if n.endswith("Scaler") else "normalize" if n.endswith("Normalizer") or n == "PCA" \
-             else "discretize" if n.endswith("Discretizer") else "preprocess"
+                or n == "t-SNE" or n == "FastICA" else "discretize" if n.endswith("Discretizer") else "preprocess"
         pipeline.append(("%s (%s)" % (v, m), p(**params)))
 
 

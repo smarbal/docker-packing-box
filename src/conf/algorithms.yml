@@ -196,6 +196,7 @@ Unsupervised:
       - clustering
     preprocessors:
       - MM
+      - t-SNE 
   AC:
     base:        !!python/name:sklearn.cluster.AgglomerativeClustering
     description: Agglomerative Clustering
